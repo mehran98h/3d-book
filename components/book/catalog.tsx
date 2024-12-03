@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import HTMLFlipBook from 'react-pageflip';
 import { motion } from 'framer-motion';
 import { Page } from './page';
@@ -12,21 +12,23 @@ import { EquipmentPage } from './pages/equipment';
 import { ContactPage } from './pages/contact';
 
 export const Catalog = () => {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState<number>(0);
   const totalPages = 5;
+
+  // ایجاد refs برای دسترسی به دکمه‌های ورق زدن
+  const flipBookRef = useRef<HTMLFlipBook | null>(null);
 
   const handlePageChange = (e: any) => {
     setPage(e.data);
   };
 
+  // استفاده از refs برای مدیریت صفحات
   const handlePrevious = () => {
-    const prevButton = document.querySelector('.page-previous') as HTMLElement;
-    if (prevButton) prevButton.click();
+    flipBookRef.current?.flipPrev(); // استفاده از متد flipPrev کتاب
   };
 
   const handleNext = () => {
-    const nextButton = document.querySelector('.page-next') as HTMLElement;
-    if (nextButton) nextButton.click();
+    flipBookRef.current?.flipNext(); // استفاده از متد flipNext کتاب
   };
 
   return (
@@ -38,6 +40,7 @@ export const Catalog = () => {
         className="relative w-[1000px] h-[700px]"
       >
         <HTMLFlipBook
+          ref={flipBookRef} // اضافه کردن ref به کامپوننت
           width={500}
           height={700}
           size="stretch"
@@ -51,6 +54,7 @@ export const Catalog = () => {
           onFlip={handlePageChange}
           className="book"
         >
+          {/* صفحات مختلف */}
           <Page pageNumber={1}>
             <CoverPage />
           </Page>
